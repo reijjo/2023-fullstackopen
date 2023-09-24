@@ -1,5 +1,17 @@
 import { useState } from "react";
 
+const Statistics = (props) => (
+  <tr>
+    <td>
+      {props.text} {props.value}
+    </td>
+  </tr>
+);
+
+const Button = ({ handleClick, text }) => {
+  return <button onClick={handleClick}>{text}</button>;
+};
+
 const App = () => {
   // tallenna napit omaan tilaansa
   const [good, setGood] = useState(0);
@@ -33,16 +45,29 @@ const App = () => {
   return (
     <div>
       <h2>give feedback</h2>
-      <button onClick={handleGood}>good</button>
-      <button onClick={handleNeutral}>neutral</button>
-      <button onClick={handleBad}>bad</button>
-      <h2>statistics</h2>
-      <div>good {good}</div>
-      <div>neutral {neutral}</div>
-      <div>bad {bad}</div>
-      <div>all {all}</div>
-      <div>average {score / all}</div>
-      <div>positive {(pos / all) * 100} %</div>
+      <Button handleClick={handleGood} text="good" />
+      <Button handleClick={handleNeutral} text="neutral" />
+      <Button handleClick={handleBad} text="bad" />
+
+      {all ? (
+        <>
+          <h2>statistics</h2>
+          <table>
+            <tbody>
+              <Statistics text="good" value={good} />
+              <Statistics text="neutral" value={neutral} />
+              <Statistics text="bad" value={bad} />
+              <Statistics text="all" value={all} />
+              <Statistics text="score" value={score / all} />
+              <Statistics text="pos" value={(pos / all) * 100 + " %"} />
+            </tbody>
+          </table>
+        </>
+      ) : (
+        <>
+          <p>No feedback given</p>
+        </>
+      )}
     </div>
   );
 };
