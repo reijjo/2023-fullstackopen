@@ -3,12 +3,15 @@ import personService from "./services/persons";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState("success");
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => {
@@ -43,7 +46,22 @@ const App = () => {
                 person.id !== findPerson.id ? person : returnedPerson
               )
             );
+            setNotificationMessage(`Updated ${findPerson.name} number`);
+            setTimeout(() => {
+              setNotificationMessage(null);
+            }, 5000);
+          })
+          .catch((error) => {
+            setNotificationMessage(
+              `Information of ${findPerson.name} has already been removed from server`
+            );
+            setNotificationType("error");
+            setTimeout(() => {
+              setNotificationMessage(null);
+              setNotificationType("success");
+            }, 5000);
           });
+
         setNewName("");
         setNewNumber("");
       } else {
@@ -54,6 +72,10 @@ const App = () => {
     } else {
       personService.create(personObject).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
+        setNotificationMessage(`Added ${personObject.name}`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 5000);
       });
       setNewName("");
       setNewNumber("");
@@ -66,6 +88,10 @@ const App = () => {
     if (window.confirm(`Delete ${personName.name} ?`))
       personService.deleteUser(id).then(() => {
         setPersons(persons.filter((person) => person.id !== id));
+        setNotificationMessage(`Deleted ${personName.name}`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 5000);
       });
   };
 
@@ -84,6 +110,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} type={notificationType} />
 
       <Filter handleFilter={handleFilter} filter={filter} />
 
