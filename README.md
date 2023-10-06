@@ -43,6 +43,19 @@ export default App;
 'react/prop-types': false
 ```
 
-# Country API
+# OSA 2
+
+## Country API
 
 `https://studies.cs.helsinki.fi/restcountries/`
+
+## Weather API
+
+`https://api.openweathermap.org/data/2.5/weather?units=metric&lat=LAT&lon=LNG&appid=APIKEY`
+
+## How to start project Vite project with API KEY
+
+- `VITE_SOME_KEY=APIKEYYY npm run dev`
+
+- use the api key
+  - const api_key = import.meta.env.VITE_SOME_KEY

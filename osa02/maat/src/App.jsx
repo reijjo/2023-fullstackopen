@@ -6,8 +6,20 @@ const App = () => {
   const [all, setAll] = useState(null);
   const [countries, setCountries] = useState([]);
   const [theCountry, setTheCountry] = useState(null);
+  const [weather, setWeather] = useState(null);
 
   const countryAPI = "https://studies.cs.helsinki.fi/restcountries/api";
+  const weatherAPIKEY = import.meta.env.VITE_SOME_KEY;
+
+  const getWeather = () => {
+    axios
+      .get(
+        `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${theCountry.latlng[0]}&lon=${theCountry.latlng[1]}&appid=${weatherAPIKEY}`
+      )
+      .then((response) => {
+        setWeather(response.data);
+      });
+  };
 
   useEffect(() => {
     console.log("getting countries...");
@@ -35,6 +47,12 @@ const App = () => {
     }
   }, [countries]);
 
+  useEffect(() => {
+    if (theCountry) {
+      getWeather();
+    }
+  }, [theCountry]);
+
   if (!all) {
     return <h1>Loading...</h1>;
   }
@@ -42,9 +60,6 @@ const App = () => {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
-
-  console.log("Countries", countries);
-  console.log("THE", theCountry);
 
   const showCountry = (name) => {
     setTheCountry(name);
@@ -65,7 +80,7 @@ const App = () => {
       {/* If too many countries */}
       {countries.length > 10 ? (
         <div>Too many matches, specify another filter</div>
-      ) : theCountry ? (
+      ) : theCountry && weather ? (
         // Only one
         <>
           <h1>{theCountry.name.common}</h1>
@@ -79,7 +94,18 @@ const App = () => {
             ))}
           </ul>
 
-          <img src={theCountry.flags.svg} alt="flag" height="200px" />
+          <img src={theCountry.flags.svg} alt="flag" height="150px" />
+
+          <h3>Weather in {theCountry.capital}</h3>
+          <div>temparature {weather.main.temp} Celcius</div>
+
+          <img
+            src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            alt="weather"
+            height="150px"
+          />
+
+          <div>wind {weather.wind.speed} m/s</div>
         </>
       ) : (
         // Under 10
