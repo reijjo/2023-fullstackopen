@@ -22,7 +22,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log("getting countries...");
     axios.get(`${countryAPI}/all`).then((response) => {
       setAll(response.data);
     });
