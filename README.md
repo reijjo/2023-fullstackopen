@@ -221,3 +221,70 @@ app.post("/api/notes/", (req, res) => {
   res.json(note);
 });
 ```
+
+## MongoDB
+
+### MongoDB Atlas
+
+- create account `https://www.mongodb.com/atlas/database`
+- create Organization and Project
+- 'Build a Cluster' -> Create free -> Wait for the cluster to be ready
+- create user and allow access for all ip addresses
+- connect to your database and copy the MongoDB URI
+
+### Backend with MongoDB
+
+- `npm install mongoose` and then make a file to test MongoDB
+
+```js
+const mongoose = require("mongoose");
+
+if (process.argv.length < 3) {
+  console.log("give password as argument");
+  process.exit(1);
+}
+
+const password = process.argv[2];
+
+const url = `[YOUR_MONGODB_URI]`;
+// for example `mongodb+srv://fullstack:<password>@cluster0.ki8kl40.mongodb.net/?retryWrites=true&w=majority`
+// and change it to this format `mongodb+srv://fullstack:${password}@cluster0.ki8kl40.mongodb.net/?retryWrites=true&w=majority`
+// remember to add the database name on your MongoDB URI `...mongodb.net/YOURDATABASENAME?retryWRites...`
+
+mongoose.set("strictQuery", false);
+mongoose.connect(url);
+
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+});
+
+const Note = mongoose.model("Note", noteSchema);
+
+const note = new Note({
+  content: "HTML is Easy",
+  important: true,
+});
+
+note.save().then((result) => {
+  console.log("note saved!");
+  mongoose.connection.close();
+});
+```
+
+- run the test file `node mongo.js [YOURPASSWORD]` in terminal
+- in MongoDB Atlas 'Browse Collections' and there should be a note saved
+- find notes
+
+```js
+Note.find({}).then((result) => {
+  result.forEach((note) => {
+    console.log(note);
+  });
+  mongoose.connection.close();
+});
+```
+
+#### for FLY
+
+`fly secrets set MONGODB_URI='mongodb+srv://fullstack:<password>@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority'`
