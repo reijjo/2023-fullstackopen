@@ -52,9 +52,7 @@ const App = () => {
             }, 5000);
           })
           .catch((error) => {
-            setNotificationMessage(
-              `Information of ${findPerson.name} has already been removed from server`
-            );
+            setNotificationMessage(error.response.data.error);
             setNotificationType("error");
             setTimeout(() => {
               setNotificationMessage(null);
@@ -70,13 +68,24 @@ const App = () => {
 
       // alert(`${personObject.name} is already added to phonebook `);
     } else {
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNotificationMessage(`Added ${personObject.name}`);
-        setTimeout(() => {
-          setNotificationMessage(null);
-        }, 5000);
-      });
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNotificationMessage(`Added ${personObject.name}`);
+          setTimeout(() => {
+            setNotificationMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log(error.response.data);
+          setNotificationMessage(error.response.data.error);
+          setNotificationType("error");
+          setTimeout(() => {
+            setNotificationMessage(null);
+            setNotificationType("success");
+          }, 5000);
+        });
       setNewName("");
       setNewNumber("");
     }
