@@ -288,3 +288,230 @@ Note.find({}).then((result) => {
 #### for FLY
 
 `fly secrets set MONGODB_URI="mongodb+srv://fullstack:<password>@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority"`
+
+# OSA 4
+
+## Structuring backend
+
+├── index.js
+├── app.js
+├── build
+│ ├── ...
+├── controllers
+│ └── notes.js
+├── models
+│ └── note.js
+├── package-lock.json
+├── package.json
+├── utils
+│ ├── logger.js
+│ ├── config.js
+│ └── middleware.js
+
+- utils/logger.js
+
+```js
+const info = (...params) => {
+  console.log(...params);
+};
+
+const error = (...params) => {
+  console.error(...params);
+};
+
+module.exports = {
+  info,
+  error,
+};
+```
+
+- index.js
+
+```js
+const app = require("./app"); // varsinainen Express-sovellus
+const config = require("./utils/config");
+const logger = require("./utils/logger");
+
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`);
+});
+```
+
+- utils/config.js
+
+```js
+require("dotenv").config();
+
+let PORT = process.env.PORT;
+let MONGODB_URI = process.env.MONGODB_URI;
+
+module.exports = {
+  MONGODB_URI,
+  PORT,
+};
+```
+
+- controllers/notes.js
+
+```js
+const notesRouter = require("express").Router();
+const Note = require("../models/note");
+
+notesRouter.get("/", (request, response) => {
+  Note.find({}).then((notes) => {
+    response.json(notes);
+  });
+});
+
+notesRouter.get("/:id", (request, response, next) => {
+  Note.findById(request.params.id)
+    .then((note) => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+
+notesRouter.post("/", (request, response, next) => {
+  const body = request.body;
+
+  const note = new Note({
+    content: body.content,
+    important: body.important || false,
+  });
+
+  note
+    .save()
+    .then((savedNote) => {
+      response.json(savedNote);
+    })
+    .catch((error) => next(error));
+});
+
+notesRouter.delete("/:id", (request, response, next) => {
+  Note.findByIdAndRemove(request.params.id)
+    .then(() => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
+});
+
+notesRouter.put("/:id", (request, response, next) => {
+  const body = request.body;
+
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updatedNote) => {
+      response.json(updatedNote);
+    })
+    .catch((error) => next(error));
+});
+
+module.exports = notesRouter;
+```
+
+- app.js
+
+```js
+const config = require("./utils/config");
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const notesRouter = require("./controllers/notes");
+const middleware = require("./utils/middleware");
+const logger = require("./utils/logger");
+const mongoose = require("mongoose");
+
+mongoose.set("strictQuery", false);
+
+logger.info("connecting to", config.MONGODB_URI);
+
+mongoose
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info("connected to MongoDB");
+  })
+  .catch((error) => {
+    logger.error("error connection to MongoDB:", error.message);
+  });
+
+app.use(cors());
+app.use(express.static("build"));
+app.use(express.json());
+app.use(middleware.requestLogger);
+
+app.use("/api/notes", notesRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
+
+module.exports = app;
+```
+
+- utils/middleware.js
+
+```js
+const logger = require("./logger");
+
+const requestLogger = (request, response, next) => {
+  logger.info("Method:", request.method);
+  logger.info("Path:  ", request.path);
+  logger.info("Body:  ", request.body);
+  logger.info("---");
+  next();
+};
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+const errorHandler = (error, request, response, next) => {
+  logger.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
+
+  next(error);
+};
+
+module.exports = {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+};
+```
+
+- models/note.js
+
+```js
+const mongoose = require("mongoose");
+
+const noteSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    minlength: 5,
+  },
+  important: Boolean,
+});
+
+noteSchema.set("toJSON", {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
+
+module.exports = mongoose.model("Note", noteSchema);
+```
