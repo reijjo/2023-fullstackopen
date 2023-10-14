@@ -515,3 +515,98 @@ noteSchema.set("toJSON", {
 
 module.exports = mongoose.model("Note", noteSchema);
 ```
+
+## Jest
+
+- `npm install --save-dev jest`
+
+### package.json
+
+- on scripts
+
+```json
+	"test": "jest --verbose
+```
+
+- end of the file
+
+```json
+	"jest": {
+		"testEnvironment": "node"
+	}
+```
+
+- make utils/for_testing.js file
+
+```js
+const reverse = (string) => {
+  return string.split("").reverse().join("");
+};
+
+const average = (array) => {
+  const reducer = (sum, item) => {
+    return sum + item;
+  };
+  return array.reduce(reducer, 0) / array.length;
+};
+
+module.exports = {
+  reverse,
+  average,
+};
+```
+
+- make tests/reverse.test.js file
+
+```js
+const reverse = require("../utils/for_testing").reverse;
+
+test("reverse of a", () => {
+  const result = reverse("a");
+
+  expect(result).toBe("a");
+});
+
+test("reverse of react", () => {
+  const result = reverse("react");
+
+  expect(result).toBe("tkaer");
+});
+
+test("reverse of saippuakauppias", () => {
+  const result = reverse("saippuakauppias");
+
+  expect(result).toBe("saippuakauppias");
+});
+```
+
+- run test `npm run test`
+
+- make tests/average.test.js file
+
+```js
+const average = require("../utils/for_testing").average;
+
+describe("average", () => {
+  test("of one value is the value itself", () => {
+    expect(average([1])).toBe(1);
+  });
+
+  test("of many is calculated right", () => {
+    expect(average([1, 2, 3, 4, 5, 6])).toBe(3.5);
+  });
+
+  test("of empty array is zero", () => {
+    expect(average([])).toBe(0);
+  });
+});
+```
+
+- run only one test or describe block `npm test -- -t '[BLOG / DESCRIBE NAME]}'`
+- or just
+
+```js
+test.only("of empty array is zero", () => {
+  expect(average([])).toBe(0);
+});
+```
