@@ -610,3 +610,37 @@ test.only("of empty array is zero", () => {
   expect(average([])).toBe(0);
 });
 ```
+
+## If there is an error while testing
+
+- make teardown.js file to tests folder
+
+```js
+module.exports = () => {
+  process.exit(0);
+};
+```
+
+- add to package.json
+
+```json
+  "jest": {
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
+  }
+```
+
+## Run single tests
+
+- with filename `npm test -- tests/note_api.test.js`
+- with test/describe name `npm test -- -t 'MY TEST'`
+- with part of the name/describe `npm test -- --t 'MY'`
+
+## No more try-catch
+
+- https://github.com/davidbanham/express-async-errors
+- `npm install express-async-errors` and then in app.js
+
+```js
+require("express-async-errors");
+```
