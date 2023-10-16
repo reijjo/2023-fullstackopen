@@ -16,14 +16,18 @@ blogRouter.post("/", (request, response) => {
     title: title,
     author: author,
     url: url,
-    likes: likes,
+    likes: likes || 0,
   });
 
-  console.log("blog content", blog);
+  // console.log("blog content", blog);
 
-  blog.save().then((result) => {
-    response.status(201).json(result);
-  });
+  if (!blog.title || !blog.url) {
+    return response.status(400).end();
+  } else {
+    blog.save().then((result) => {
+      response.status(201).json(result);
+    });
+  }
 });
 
 module.exports = blogRouter;

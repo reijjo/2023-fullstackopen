@@ -520,12 +520,24 @@ module.exports = mongoose.model("Note", noteSchema);
 
 - `npm install --save-dev jest`
 
+## Different environment for testing
+
+### .env file (this is for mongoDB)
+
+- make different database for testing so it doesn't mess everything up
+
+```
+MONGODB_URI=mongodb+srv://.../noteApp?retryWrites=true&w=majority
+TEST_MONGODB_URI=mongodb+srv://.../testNoteApp?retryWrites=true&w=majority
+```
+
 ### package.json
 
 - on scripts
 
 ```json
-	"test": "jest --verbose
+	"dev": "NODE_ENV=develpment nodemon index.js",
+	"test": "NODE_ENV=test jest --verbose"
 ```
 
 - end of the file
@@ -535,6 +547,8 @@ module.exports = mongoose.model("Note", noteSchema);
 		"testEnvironment": "node"
 	}
 ```
+
+### first tests
 
 - make utils/for_testing.js file
 
@@ -611,6 +625,47 @@ test.only("of empty array is zero", () => {
 });
 ```
 
+## IMPORTANTE! (supertest)
+
+- https://github.com/ladjs/supertest
+- `npm install --save-dev supertest`
+- example file tests/note_api.test.js
+
+```js
+const mongoose = require("mongoose");
+const supertest = require("supertest");
+const app = require("../app");
+const api = supertest(app);
+const Note = require("../models/note");
+
+const initialNotes = [
+  {
+    content: "HTML is easy",
+    important: false,
+  },
+  {
+    content: "Browser can execute only JavaScript",
+    important: true,
+  },
+];
+
+beforeEach(async () => {
+  await Blog.deleteMany({});
+  await Blog.insertMany(initialNotes);
+});
+
+test("notes are returned as json", async () => {
+  await api
+    .get("/api/notes")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+```
+
 ## If there is an error while testing
 
 - make teardown.js file to tests folder
@@ -644,3 +699,5 @@ module.exports = () => {
 ```js
 require("express-async-errors");
 ```
+
+##

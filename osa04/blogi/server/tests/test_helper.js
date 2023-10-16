@@ -1,4 +1,3 @@
-const { notesInDb } = require("../../../example/server/tests/test_helper");
 const Blog = require("../models/blog");
 
 const initialBlogs = [
@@ -54,7 +53,7 @@ const initialBlogs = [
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({});
-  return notesInDb.map((blog) => blog.toJOSN());
+  return blogs.map((blog) => blog.toJSON());
 };
 
 module.exports = {
