@@ -103,6 +103,48 @@ test("New blogs without title / url are bad!", async () => {
     .expect("Content-Type", /application\/json/);
 });
 
+test("deletion of a blog", async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToDelete = blogsAtStart[0];
+
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+
+  const contents = blogsAtEnd.map((r) => r.title);
+
+  expect(contents).not.toContain(blogToDelete.content);
+});
+
+test("Updating a blog", async () => {
+  const blogsAtStart = await helper.blogsInDb();
+  const blogToUpdate = blogsAtStart[0];
+
+  console.log("blotto", blogToUpdate.id);
+
+  expect(blogToUpdate.title).toContain("React patterns");
+
+  const updatedBlog = {
+    title: "Ei oo reactii enaa",
+    author: "Sepi Kumpulainen",
+    url: "laulavatalonmies.fi",
+    likes: 1001,
+  };
+
+  const response = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200);
+
+  const blogsAtEnd = await helper.blogsInDb();
+
+  const contents = blogsAtEnd.map((t) => t.title);
+
+  expect(contents).not.toContain("React patterns");
+});
+
 // Close the connection to BLOGTEST database
 
 afterAll(async () => {
