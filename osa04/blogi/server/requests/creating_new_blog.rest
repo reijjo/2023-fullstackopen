@@ -1,8 +1,9 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9yJ1c2VybmFtZSI6ImxpaXN1a2thMSIsImlkIjoiNjUzMDE4NmIzNDRiZWNlNWVmNDhhYTkyIiwiaWF0IjoxNjk3NzA0NDcwLCJleHAiOjE2OTc3MDgwNzB9.QlAyprrDzp3l5eH21wen3lhVKOSfQhnqLQm8jY1RzYg
 
 {
-	"title": "Eka blogi",
+	"title": "USERRR EXTRACTOR433443 9",
 	"author": "Reijjo",
 	"url": "reijjo.com",
 	"likes": 2000

@@ -289,6 +289,29 @@ Note.find({}).then((result) => {
 
 `fly secrets set MONGODB_URI="mongodb+srv://fullstack:<password>@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority"`
 
+### Make proxy so you can use /api/notes and not http://localhost:3001/api/notes
+
+- vite.config.js
+
+```js
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+    },
+  },
+});
+```
+
 # OSA 4
 
 ## Structuring backend
@@ -689,7 +712,7 @@ module.exports = () => {
 
 - with filename `npm test -- tests/note_api.test.js`
 - with test/describe name `npm test -- -t 'MY TEST'`
-- with part of the name/describe `npm test -- --t 'MY'`
+- with part of the name/describe `npm test -- --t 'MY't
 
 ## No more try-catch
 
@@ -700,4 +723,87 @@ module.exports = () => {
 require("express-async-errors");
 ```
 
-##
+## JsonWebToken
+
+- `npm install jsonwebtoken`
+- controllers/login.js file
+
+```js
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const loginRouter = require("express").Router();
+const User = require("../models/user");
+
+loginRouter.post("/", async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = await User.findOne({ username });
+  const passwordCorrect =
+    user === null ? false : await bcrypt.compare(password, user.passwordHash);
+
+  if (!(user && passwordCorrect)) {
+    return res.status(401).json({
+      error: "invalid username or password",
+    });
+  }
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+
+  const token = jwt.sign(userForToken, process.env.SECRET);
+
+  res.status(200).send({ token, username: user.username, name: user.name });
+});
+
+module.exports = loginRouter;
+```
+
+- add token authorization to controllers/notes.js
+
+```js
+// Token authorization
+
+const getTokenFrom = (req) => {
+  const authorization = req.get("authorization");
+  console.log("Authorizaition", authorization);
+  if (authorization && authorization.startsWith("bearer ")) {
+    const done = authorization.replace("bearer ", "");
+    console.log("DONE", done);
+    return done;
+  }
+  return null;
+};
+// ...
+notesRouter.post("/", async (request, response, next) => {
+  const body = request.body;
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+  const user = await User.findById(decodedToken.id);
+  console.log("user", user);
+
+  const note = new Note({
+    content: body.content,
+    important: body.important || false,
+    user: user._id,
+  });
+
+  const savedNote = await note.save();
+  user.notes = user.notes.concat(savedNote._id);
+  await user.save();
+
+  response.status(201).json(savedNote);
+});
+```
+
+- add expiration time for token in controllers/login.js
+
+```js
+// ...
+const token = jwt.sign(userForToken, process.env.SECRET, {
+  expiresIn: 60 * 60,
+});
+```

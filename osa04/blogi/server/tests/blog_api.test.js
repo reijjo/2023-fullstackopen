@@ -6,12 +6,37 @@ const app = require("../app");
 const api = supertest(app);
 
 const Blog = require("../models/blog");
+const User = require("../models/user");
+
+const loginAndGetToken = async () => {
+  const testUser = {
+    username: "testuser",
+    password: "testpassword",
+  };
+
+  const users = await api.get("/api/users");
+  const existingUser = users.body.find(
+    (user) => user.username === testUser.username
+  );
+  if (!existingUser) {
+    await api.post("/api/users").send({
+      username: testUser.username,
+      name: "Test User",
+      password: testUser.password,
+    });
+  }
+  const res = await api.post("/api/login").send(testUser);
+  return res.body.token;
+};
 
 // Delete old blogs from BLOGTEST database and add new ones
 
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(helper.initialBlogs);
+
+  await User.deleteMany({});
+  await User.insertMany(helper.oneUser);
 });
 
 test("blogs are returned as json", async () => {
@@ -38,8 +63,11 @@ test("You can add a blog?", async () => {
     likes: 1000,
   };
 
+  const token = await loginAndGetToken();
+
   await api
     .post("/api/blogs")
+    .set("Authorization", `bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect("Content-Type", /application\/json/);
@@ -59,8 +87,11 @@ test("New blog without likes = 0", async () => {
     url: "www.reijjo.info",
   };
 
+  const token = await loginAndGetToken();
+
   await api
     .post("/api/blogs")
+    .set("Authorization", `bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect("Content-Type", /application\/json/);
@@ -80,7 +111,13 @@ test("New blogs without title / url are bad!", async () => {
     likes: 400,
   };
 
-  await api.post("/api/blogs").send(blogNoTitle).expect(400);
+  const token = await loginAndGetToken();
+
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `bearer ${token}`)
+    .send(blogNoTitle)
+    .expect(400);
 
   const blogNoUrl = {
     title: "Elämä on lahja",
@@ -88,7 +125,11 @@ test("New blogs without title / url are bad!", async () => {
     likes: 400,
   };
 
-  await api.post("/api/blogs").send(blogNoUrl).expect(400);
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `bearer ${token}`)
+    .send(blogNoUrl)
+    .expect(400);
 
   const newBlog = {
     title: "Uutta materiaalia",
@@ -98,6 +139,7 @@ test("New blogs without title / url are bad!", async () => {
 
   await api
     .post("/api/blogs")
+    .set("Authorization", `bearer ${token}`)
     .send(newBlog)
     .expect(201)
     .expect("Content-Type", /application\/json/);
@@ -107,11 +149,33 @@ test("deletion of a blog", async () => {
   const blogsAtStart = await helper.blogsInDb();
   const blogToDelete = blogsAtStart[0];
 
-  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+  const newBlog = {
+    title: "Uutta materiaalia",
+    author: "REpe",
+    url: "www.reijjo.info",
+    likes: 1000,
+  };
+
+  const token = await loginAndGetToken();
+
+  const testBlog = await api
+    .post("/api/blogs")
+    .set("Authorization", `bearer ${token}`)
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const blogsAtMiddle = await helper.blogsInDb();
+  expect(blogsAtMiddle).toHaveLength(helper.initialBlogs.length + 1);
+
+  await api
+    .delete(`/api/blogs/${testBlog.body.id}`)
+    .set("Authorization", `bearer ${token}`)
+    .expect(204);
 
   const blogsAtEnd = await helper.blogsInDb();
 
-  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
 
   const contents = blogsAtEnd.map((r) => r.title);
 
