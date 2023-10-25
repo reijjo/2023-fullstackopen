@@ -42,14 +42,34 @@ const tokenExtractor = (req, res, next) => {
 
 const userExtractor = async (req, res, next) => {
   try {
+    if (!req.token) {
+      return res.status(401).json({ error: "Token missing" });
+    }
+
+    console.log("!req.token selatetty");
+
     const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
     if (!decodedToken.id) {
-      return res.status(401).json({ error: "token invalid " });
-    } else {
-      req.user = await User.findById(decodedToken.id);
-      next();
+      return res.status(401).json({ error: "Token invalid" });
     }
+
+    console.log("!decodedtoken selatetty");
+
+    const user = await User.findById(decodedToken.id);
+
+    console.log("mites user??", user);
+
+    if (!user) {
+      return res.status(401).json({ error: "User not found" });
+    }
+
+    console.log("!user selatetty");
+
+    req.user = user;
+
+    console.log("oiskoe req.user?", req.user);
+    next();
   } catch (error) {
     return res.status(401).json({ error: "Old or invalid token." });
   }
