@@ -33,6 +33,7 @@ const tokenExtractor = (req, res, next) => {
 
   if (authorization && authorization.startsWith("bearer ")) {
     req.token = authorization.replace("bearer ", "");
+    console.log("req.token", req.token);
   } else {
     req.token = null;
   }
@@ -46,9 +47,9 @@ const userExtractor = async (req, res, next) => {
       return res.status(401).json({ error: "Token missing" });
     }
 
-    console.log("!req.token selatetty");
-
     const decodedToken = jwt.verify(req.token, process.env.SECRET);
+
+    console.log("decoded", decodedToken);
 
     if (!decodedToken.id) {
       return res.status(401).json({ error: "Token invalid" });
