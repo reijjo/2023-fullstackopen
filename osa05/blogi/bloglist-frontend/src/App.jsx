@@ -31,9 +31,6 @@ const App = () => {
   }, []);
 
   const addBlog = async (blogObject) => {
-    // event.preventDefault();
-    console.log("new blogobject", blogObject);
-
     try {
       const newBlog = await blogService.create(blogObject);
 
@@ -48,6 +45,36 @@ const App = () => {
       blogFormRef.current.toggleVisibility();
     } catch (exception) {
       setErrorMessage("Error creating blog", exception);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const addLike = async (blogObject) => {
+    try {
+      const likedBlog = await blogService.like(blogObject);
+      setBlogs(
+        blogs.map((blog) => (blog.id === likedBlog.id ? likedBlog : blog))
+      );
+    } catch (exception) {
+      setErrorMessage("Error liking blog", exception);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const deleteBlog = async (blogObject) => {
+    try {
+      if (
+        window.confirm(`Remove blog ${blogObject.title} ${blogObject.author}`)
+      ) {
+        const deletedOne = await blogService.remove(blogObject);
+        setBlogs(blogs.filter((blog) => blog.id !== blogObject.id));
+      }
+    } catch (exception) {
+      setErrorMessage("Error deleting blog", exception);
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -107,6 +134,8 @@ const App = () => {
     );
   }
 
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
+
   return (
     <div>
       <h2>blogs</h2>
@@ -126,8 +155,13 @@ const App = () => {
       <Togglable buttonLabel="new note" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+      {sortedBlogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blog={blog}
+          likeBlog={addLike}
+          removeBlog={deleteBlog}
+        />
       ))}
     </div>
   );

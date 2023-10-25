@@ -9,9 +9,7 @@ const BlogForm = ({ createBlog }) => {
 
   const addBlog = async (event) => {
     event.preventDefault();
-
     await createBlog(newBlog);
-
     setNewBlog({ title: "", author: "", url: "" });
   };
 
@@ -22,6 +20,7 @@ const BlogForm = ({ createBlog }) => {
       [name]: value,
     });
   };
+
   return (
     <>
       <h2>create new</h2>

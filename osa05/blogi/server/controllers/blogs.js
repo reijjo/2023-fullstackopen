@@ -35,6 +35,9 @@ blogRouter.post("/", userExtractor, async (request, response) => {
       const savedBlog = await blog.save();
       user.blogs = user.blogs.concat(savedBlog._id);
       await user.save();
+
+      await savedBlog.populate("user");
+
       response.status(201).json(savedBlog);
     }
   } catch (error) {
@@ -47,8 +50,10 @@ blogRouter.post("/", userExtractor, async (request, response) => {
 
 blogRouter.delete("/:id", userExtractor, async (req, res, next) => {
   try {
-    const blog = await Blog.findById(req.params.id);
     const userid = req.user;
+    const blog = await Blog.findById(req.params.id);
+
+    console.log("blog", blog, "userid", userid, "blog user", blog.user);
 
     if (blog.user.toString() === userid._id.toString()) {
       await Blog.findByIdAndRemove(req.params.id);
@@ -64,12 +69,12 @@ blogRouter.delete("/:id", userExtractor, async (req, res, next) => {
 
 blogRouter.put("/:id", async (req, res, next) => {
   const body = req.body;
+  console.log("BACK BODY", body);
 
   const blog = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
+    ...body,
+    user: body.user.id,
+    likes: body.likes + 1,
   };
 
   const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
