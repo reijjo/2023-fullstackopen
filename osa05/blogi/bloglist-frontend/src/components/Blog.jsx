@@ -21,18 +21,18 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   };
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="titleAuthor">
       {blog.title} {blog.author}{" "}
       <button onClick={() => setFullBlog(!fullBlog)}>
         {fullBlog ? "hide" : "view"}
       </button>
       {fullBlog && (
         <div>
-          <div>{blog.url}</div>
-          <div>
+          <div className="blogUrl">{blog.url}</div>
+          <div className="blogLikes">
             likes {blog.likes} <button onClick={addLike}>like</button>
           </div>
-          <div>{blog.user.name}</div>
+          <div className="blogUser">{blog.user.name}</div>
           <button onClick={deleteBlog}>remove</button>
         </div>
       )}
