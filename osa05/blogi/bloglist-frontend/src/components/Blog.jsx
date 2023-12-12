@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-const Blog = ({ blog, likeBlog, removeBlog }) => {
+const Blog = ({ blog, likeBlog, removeBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -23,17 +23,23 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   return (
     <div style={blogStyle} className="titleAuthor">
       {blog.title} {blog.author}{" "}
-      <button onClick={() => setFullBlog(!fullBlog)}>
+      <button id="show-blog" onClick={() => setFullBlog(!fullBlog)}>
         {fullBlog ? "hide" : "view"}
       </button>
       {fullBlog && (
         <div>
           <div className="blogUrl">{blog.url}</div>
           <div className="blogLikes">
-            likes {blog.likes} <button onClick={addLike}>like</button>
+            likes {blog.likes}{" "}
+            <button onClick={addLike} id="like-button">
+              like
+            </button>
           </div>
           <div className="blogUser">{blog.user.name}</div>
-          <button onClick={deleteBlog}>remove</button>
+
+          {user.name === blog.user.name ? (
+            <button onClick={deleteBlog}>remove</button>
+          ) : null}
         </div>
       )}
     </div>

@@ -116,6 +116,7 @@ const App = () => {
               type="text"
               value={username}
               name="Username"
+              id="username"
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
@@ -125,10 +126,13 @@ const App = () => {
               type="password"
               value={password}
               name="Password"
+              id="password"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type="submit">login</button>
+          <button type="submit" id="login-button">
+            login
+          </button>
         </form>
       </div>
     );
@@ -137,7 +141,7 @@ const App = () => {
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
   return (
-    <div>
+    <div id="main">
       <h2>blogs</h2>
       <Notification message={errorMessage} type={errorMessageType} />
       <p>
@@ -152,7 +156,7 @@ const App = () => {
         </button>
       </p>
 
-      <Togglable buttonLabel="new note" ref={blogFormRef}>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
       {sortedBlogs.map((blog) => (
@@ -161,6 +165,7 @@ const App = () => {
           blog={blog}
           likeBlog={addLike}
           removeBlog={deleteBlog}
+          user={user}
         />
       ))}
     </div>
