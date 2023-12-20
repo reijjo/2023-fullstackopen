@@ -9,6 +9,7 @@ const BlogForm = ({ createBlog }) => {
 
   const addBlog = async (event) => {
     event.preventDefault();
+    console.log("newblog", newBlog);
     await createBlog(newBlog);
     setNewBlog({ title: "", author: "", url: "" });
   };

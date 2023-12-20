@@ -83,4 +83,32 @@ blogRouter.put("/:id", async (req, res, next) => {
   res.json(updatedBlog);
 });
 
+blogRouter.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const blog = await Blog.findById(id).populate("user", {
+    username: 1,
+    name: 1,
+    id: 1,
+  });
+  res.json(blog);
+});
+
+blogRouter.post("/:id/comments", async (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  try {
+    const blog = await Blog.findById(id);
+
+    blog.comments = blog.comments.concat(comment);
+    const updated = await blog.save();
+
+    await updated.populate("comments");
+
+    res.json(comment);
+  } catch (error) {
+    console.log("error adding comment", error);
+  }
+});
+
 module.exports = blogRouter;
