@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import blogService from "../services/blogs";
 import { useParams } from "react-router-dom";
 import { initBlogs } from "../reducers/blogReducer";
 import { useDispatch } from "react-redux";
+import { v4 as uuid } from "uuid";
 
 const Blog = ({ likeBlog, removeBlog, user }) => {
   const [blog, setBlog] = useState([]);
@@ -76,7 +77,7 @@ const Blog = ({ likeBlog, removeBlog, user }) => {
       </div>
       <ul>
         {blogCOmments.map((c) => (
-          <li>{c}</li>
+          <li key={uuid()}>{c}</li>
         ))}
       </ul>
     </div>

@@ -6,6 +6,14 @@ import { useRef } from "react";
 import { initBlogs } from "../reducers/blogReducer";
 import blogService from "../services/blogs";
 import { Link } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableContainer,
+  Paper,
+} from "@mui/material";
 
 const Blogs = ({ blogs, user }) => {
   const dispatch = useDispatch();
@@ -50,13 +58,28 @@ const Blogs = ({ blogs, user }) => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      {sortedBlogs.map((blog) => (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {sortedBlogs.map((blog) => (
+              <TableRow key={blog.id}>
+                <TableCell>
+                  <Link to={`/blogs/${blog.id}`}>
+                    {blog.title} {blog.author}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* {sortedBlogs.map((blog) => (
         <Link key={blog.id} to={`/blogs/${blog.id}`}>
           <div style={blogStyle}>
             {blog.title} {blog.author}
           </div>
         </Link>
-      ))}
+      ))} */}
     </>
   );
 };

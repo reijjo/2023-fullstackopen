@@ -6,6 +6,8 @@ import { logUser } from "../reducers/userReducer";
 import Notification from "./Notification";
 import Navbar from "./Navbar";
 
+import { TextField, Button } from "@mui/material";
+
 const LoginStuff = ({ user }) => {
   const [errorMessageType, setErrorMessageType] = useState("success");
   const [username, setUsername] = useState("");
@@ -35,9 +37,10 @@ const LoginStuff = ({ user }) => {
 
         <form onSubmit={handleLogin}>
           <div>
-            username
-            <input
+            <TextField
+              variant="standard"
               type="text"
+              label="Username"
               value={username}
               name="Username"
               id="username"
@@ -46,8 +49,9 @@ const LoginStuff = ({ user }) => {
             />
           </div>
           <div>
-            password
-            <input
+            <TextField
+              variant="standard"
+              label="Password"
               type="password"
               value={password}
               name="Password"
@@ -56,9 +60,9 @@ const LoginStuff = ({ user }) => {
               autoComplete="off"
             />
           </div>
-          <button type="submit" id="login-button">
+          <Button variant="contained" type="submit" id="login-button">
             login
-          </button>
+          </Button>
         </form>
       </div>
     );
