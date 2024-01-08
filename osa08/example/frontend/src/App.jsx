@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useQuery } from "@apollo/client";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";

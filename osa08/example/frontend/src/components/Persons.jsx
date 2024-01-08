@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { FIND_PERSON } from "../queries";

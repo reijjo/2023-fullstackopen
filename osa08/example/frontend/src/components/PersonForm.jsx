@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CREATE_PERSON, ALL_PERSONS } from "../queries";
