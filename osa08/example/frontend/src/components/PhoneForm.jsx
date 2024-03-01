@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
@@ -11,6 +10,12 @@ const PhoneForm = ({ setError }) => {
 
   const [changeNumber, result] = useMutation(EDIT_NUMBER);
 
+  useEffect(() => {
+    if (result.data && result.data.editNumber === null) {
+      setError("person not found");
+    }
+  }, [result.data, setError]);
+
   const submit = async (event) => {
     event.preventDefault();
 
@@ -19,13 +24,6 @@ const PhoneForm = ({ setError }) => {
     setName("");
     setPhone("");
   };
-
-  useEffect(() => {
-    if (result.data && result.data.editNumber === null) {
-      setError("person not found");
-      console.log("hi");
-    }
-  }, [result.data]);
 
   return (
     <div>

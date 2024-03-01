@@ -1,20 +1,9 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { FIND_PERSON } from "../queries";
+import Person from "./Person";
 
-const Person = ({ person, onClose }) => {
-  return (
-    <div>
-      <h2>{person.name}</h2>
-      <div>
-        {person.address.street} {person.address.city}
-      </div>
-      <div>{person.phone}</div>
-      <button onClick={onClose}>close</button>
-    </div>
-  );
-};
+import { FIND_PERSON } from "../queries";
 
 const Persons = ({ persons }) => {
   const [nameToSearch, setNameToSearch] = useState(null);

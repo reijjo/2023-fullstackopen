@@ -1,15 +1,19 @@
-/* eslint-disable react/prop-types */
-import { useQuery } from "@apollo/client";
+import { useQuery, useApolloClient } from "@apollo/client";
+import { useState } from "react";
+
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
-import { ALL_PERSONS } from "./queries";
-import { useState } from "react";
 import PhoneForm from "./components/PhoneForm";
+import Notify from "./components/Notify";
+import LoginForm from "./components/LoginForm";
+
+import { ALL_PERSONS } from "./queries";
 
 const App = () => {
-  const [errorMessage, setErrorMessage] = useState(null);
-
   const result = useQuery(ALL_PERSONS);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [token, setToken] = useState(null);
+  const client = useApolloClient();
 
   if (result.loading) {
     return <div>loading...</div>;
@@ -22,21 +26,31 @@ const App = () => {
     }, 10000);
   };
 
-  return (
-    <>
-      <Notify errorMessage={errorMessage} />
-      <Persons persons={result.data.allPersons} />
-      <PersonForm setError={notify} />
-      <PhoneForm setError={notify} />
-    </>
-  );
-};
+  const logout = () => {
+    setToken(null);
+    localStorage.clear();
+    client.resetStore();
+  };
 
-const Notify = ({ errorMessage }) => {
-  if (!errorMessage) {
-    return null;
+  if (!token) {
+    return (
+      <>
+        <Notify errorMessage={errorMessage} />
+        <LoginForm setToken={setToken} setError={notify} />
+      </>
+    );
   }
-  return <div style={{ color: "red" }}>{errorMessage}</div>;
+
+  return (
+    <div>
+      <Notify errorMessage={errorMessage} />
+      <PersonForm setError={notify} />
+      <button onClick={logout}>logout</button>
+      <Persons persons={result.data.allPersons} />
+
+      <PhoneForm setError={notify} />
+    </div>
+  );
 };
 
 export default App;
