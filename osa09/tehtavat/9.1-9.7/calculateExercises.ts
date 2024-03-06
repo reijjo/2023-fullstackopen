@@ -26,7 +26,7 @@ const parseArgs = (args: string[]): { target: number; hours: number[] } => {
   return { target, hours };
 };
 
-const calculateExercises = (target: number, hours: number[]): Result => {
+export const calculateExercises = (target: number, hours: number[]): Result => {
   const periodLength = hours.length;
   const trainingDays = hours.filter((hour) => hour > 0).length;
   const totalHours = hours.reduce((acc, curr) => acc + curr, 0);
@@ -65,6 +65,7 @@ try {
 } catch (error: unknown) {
   let errorMessage = "Something bad happened.";
   if (error instanceof Error) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     errorMessage += " Error: " + error.message;
   }
 }

@@ -1,4 +1,5 @@
-export const isNotNumber = (argument: any): boolean => isNaN(Number(argument));
+export const isNotNumber = (argument: unknown): boolean =>
+  isNaN(Number(argument));
 
 export const bmicalc = (height: string, weight: string) => {
   const parsedHeight = Number(height) / 100;
