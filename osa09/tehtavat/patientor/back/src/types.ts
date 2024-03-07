@@ -1,3 +1,9 @@
+export enum Gender {
+  Male = "male",
+  Female = "female",
+  Other = "other",
+}
+
 export type Diagnosis = {
   code: string;
   name: string;
@@ -14,3 +20,5 @@ export type Patient = {
 };
 
 export type CencoredPatient = Omit<Patient, "ssn">;
+
+export type NewPatient = Omit<Patient, "id">;
