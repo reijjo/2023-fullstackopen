@@ -8,6 +8,26 @@ router.get("/", (_req, res) => {
   res.send(patientService.getPatientsCencored());
 });
 
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const patient = patientService.getOnePatient(id);
+
+    if (!patient) {
+      return res.status(404).json({ message: "patient not found" });
+    }
+
+    return res.json(patient);
+  } catch (error: unknown) {
+    let errorMessage = "Something went wrong.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    return res.status(400).send(errorMessage);
+  }
+});
+
 router.get("/uncencored", (_req, res) => {
   res.send(patientService.getPatients());
 });

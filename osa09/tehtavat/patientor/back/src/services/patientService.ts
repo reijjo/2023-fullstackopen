@@ -7,6 +7,12 @@ const getPatients = (): Patient[] => {
   return patients;
 };
 
+const getOnePatient = (id: string) => {
+  const patient = patients.find((p) => p.id === id);
+
+  return patient;
+};
+
 const getPatientsCencored = (): CencoredPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
@@ -19,7 +25,7 @@ const getPatientsCencored = (): CencoredPatient[] => {
 
 const addPatient = (entry: NewPatient): Patient => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const id = uuidv4() as string;
+  const id = uuidv4();
 
   const newPatient = {
     id: id,
@@ -34,4 +40,5 @@ export default {
   getPatients,
   getPatientsCencored,
   addPatient,
+  getOnePatient,
 };
