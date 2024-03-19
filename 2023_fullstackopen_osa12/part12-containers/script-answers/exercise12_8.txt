@@ -1,0 +1,119 @@
+Script started on Tue Mar 19 16:00:03 2024
+[1m[7m%[27m[1m[0m                                                                                                                           ]2;reijjo@reijjos-Air:~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend]1;../todo-backend]7;file://reijjos-Air.home/Users/reijjo/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend\[0m[27m[24m[J[38;5;237m---------------------------------------------------------------------------------------------------------------------------[00m
+[38;5;032m~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend [38;5;075m([38;5;078mmain[38;5;214m*[00m[38;5;075m)[00m [38;5;105m»[00m [K[?1h=[?2004h[7mdock[27m [K
+[7mer compose -f docker-compose.dev.yml up[27m[K[A[A[80C[27md[27mo[27mc[27mk [1B[27me[27mr[27m [27mc[27mo[27mm[27mp[27mo[27ms[27me[27m [27m-[27mf[27m [27md[27mo[27mc[27mk[27me[27mr[27m-[27mc[27mo[27mm[27mp[27mo[27ms[27me[27m.[27md[27me[27mv[27m.[27my[27mm[27ml[27m [27mu[27mp -d[?1l>[?2004l
+]2;dock; er compose -f docker-compose.dev.yml up -d]1;dockzsh: command not found: dock
+zsh: command not found: er
+[1m[7m%[27m[1m[0m                                                                                                                           ]2;reijjo@reijjos-Air:~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend]1;../todo-backend]7;file://reijjos-Air.home/Users/reijjo/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend\[0m[27m[24m[J[38;5;237m---------------------------------------------------------------------------------------------------------------------------[00m
+[38;5;032m~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend [38;5;075m([38;5;078mmain[38;5;214m*[00m[38;5;075m)[00m [38;5;105m»[00m [K[?1h=[?2004hddock [Keer compose -f docker-compose.dev.yml[1m [0m[0m up -d[?1l>[?2004l
+]2;docker compose -f docker-compose.dev.yml up -d]1;docker[1A[1B[0G[?25l[+] Running 1/0
+ [32m✔[0m Container todo-backend-mongo-1  [32mCreated[0m                                                                            [34m0.0s [0m
+[?25h[1A[1A[0G[?25l[34m[+] Running 1/1[0m
+ [32m✔[0m Container todo-backend-mongo-1  [32mCreated[0m                                                                            [34m0.0s [0m
+[?25h[1A[1A[0G[?25l[34m[+] Running 1/1[0m
+ [32m✔[0m Container todo-backend-mongo-1  [32mStarted[0m                                                                            [34m0.0s [0m
+[?25h[1m[7m%[27m[1m[0m                                                                                                                           ]2;reijjo@reijjos-Air:~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend]1;../todo-backend]7;file://reijjos-Air.home/Users/reijjo/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend\[0m[27m[24m[J[38;5;237m---------------------------------------------------------------------------------------------------------------------------[00m
+[38;5;032m~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend [38;5;075m([38;5;078mmain[38;5;214m*[00m[38;5;075m)[00m [38;5;105m»[00m [K[?1h=[?2004hddock [Keer cointa    ntainer ls[?1l>[?2004l
+]2;docker container ls]1;dockerCONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                     NAMES
+70b91e1bd491   mongo     "docker-entrypoint.s…"   40 minutes ago   Up 11 seconds   0.0.0.0:3456->27017/tcp   todo-backend-mongo-1
+[1m[7m%[27m[1m[0m                                                                                                                           ]2;reijjo@reijjos-Air:~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend]1;../todo-backend]7;file://reijjos-Air.home/Users/reijjo/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend\[0m[27m[24m[J[38;5;237m---------------------------------------------------------------------------------------------------------------------------[00m
+[38;5;032m~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend [38;5;075m([38;5;078mmain[38;5;214m*[00m[38;5;075m)[00m [38;5;105m»[00m [K[?1h=[?2004hddock [Keer exec =it  -  -it m tood  do-backend-mongo-1 bash[?1l>[?2004l
+]2;docker exec -it todo-backend-mongo-1 bash]1;docker[?2004hroot@70b91e1bd491:/# mongosh
+[?2004l]0;mongosh mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000Current Mongosh Log ID:	65f99ae51dd7033b0eb1912a
+Connecting to:		[1m[32mmongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.5[0m
+Using MongoDB:		7.0.6
+[1m[33mUsing Mongosh[0m:		2.1.5
+
+For mongosh info see: [1mhttps://docs.mongodb.com/mongodb-shell/[0m
+
+
+To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).
+You can opt-out by running the [1mdisableTelemetry()[0m command.
+
+[1G[0J [1G[1G[0Jtest> [7Gshow dbs
+Uncaught [1m[31mMongoServerError[0m[1m[31m[Unauthorized][0m: Command listDatabases requires authentication
+[1G[0Jtest> [7Gexit
+[?2004hroot@70b91e1bd491:/# mongosh -u root -p example
+[?2004l]0;mongosh mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000Current Mongosh Log ID:	65f99b02779481ff9d9c9361
+Connecting to:		[1m[32mmongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.1.5[0m
+Using MongoDB:		7.0.6
+[1m[33mUsing Mongosh[0m:		2.1.5
+
+For mongosh info see: [1mhttps://docs.mongodb.com/mongodb-shell/[0m
+
+[1G[0J [1G[1m[33m------[0m
+   [1m[33mThe server generated these startup warnings when booting[0m
+   2024-03-19T14:00:22.860+00:00: /sys/kernel/mm/transparent_hugepage/enabled is 'always'. We suggest setting it to 'never'
+   2024-03-19T14:00:22.860+00:00: vm.max_map_count is too low
+[1m[33m------[0m
+
+[1G[0Jtest> [7Gshow dbs
+[1madmin[0m         100.00 KiB
+[1mconfig[0m        108.00 KiB
+[1mlocal[0m          72.00 KiB
+[1mthe_database[0m   56.00 KiB
+[1G[0Jtest> [7Guse the_database
+switched to db the_database
+[1G[0Jthe_database> [15Gshow collections
+[1mtodos[0m
+[1G[0Jthe_database> [15Gdb.todos.find({})
+[
+  {
+    _id: ObjectId([32m'65f98f338d4284bb4d40aa25'[39m),
+    text: [32m'Write code'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'65f98f338d4284bb4d40aa26'[39m),
+    text: [32m'Learn about containers!'[39m,
+    done: [33mtrue[39m
+  }
+]
+[1G[0Jthe_database> [15Gdb.,[1G[0Jthe_database> db.[18Gcollection.insertOne({ text[33mtext[39m: [32m"[39m[32mI[39m[32mn[39m[32mc[39m[32mr[39m[32me[39m[32ma[39m[32ms[39m[32me[39m [32mt[39m[32mh[39m[32me[39m [32mn[39m[32mu[39m[32mm[39m[32mb[39m[32me[39m[32mr[39m [32mo[39m[32mf[39m [32mt[39m[32mo[39m[32mo[39m[32ml[39m[32ms[39m [32mi[39m[32mn[39m [32mm[39m[32my[39m [32mt[39m[32mo[39m[32mo[39m[32ml[39m[32mb[39m[32me[39m[32ml[39m[32mt[39m[32m"[39m, d[36mdo[39mdone: fakl[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: fak[103G[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: fa[102Gls[33mfalse[39m })
+{
+  acknowledged: [33mtrue[39m,
+  insertedId: ObjectId([32m'65f99b9e779481ff9d9c9362'[39m)
+}
+[1G[0Jthe_database> [15G[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[108G[1G[0Jthe_database> db.todos.find({})[32G
+[
+  {
+    _id: ObjectId([32m'65f98f338d4284bb4d40aa25'[39m),
+    text: [32m'Write code'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'65f98f338d4284bb4d40aa26'[39m),
+    text: [32m'Learn about containers!'[39m,
+    done: [33mtrue[39m
+  }
+]
+[1G[0Jthe_database> [15G[1G[0Jthe_database> db.todos.find({})[32G[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[108G[1D[1G[0Jthe_database> db.collection.insertOne[44m([49m{ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[107G[1D[1G[0Jthe_database> db.collection.insertOne([44m{[49m [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[106G[6D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[100G[2D[4D[3D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [44m[32m"[49mIncrease the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[91G[8D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[83G[3D[3D[6D[3D[7D[4D[9D[1D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt[44m"[39m[49m, [33mdone[39m: [33mfalse[39m })[47G[2D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[45G[4D[3D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m }[44m)[49m[38G[9D[1G[0Jthe_database> db.collection.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[29G[1D[1G[0Jthe_database> db.collectio.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[27G[1G[0Jthe_database> db.collecti.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[26G[1G[0Jthe_database> db.collect.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[25G[1G[0Jthe_database> db.collec.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[24G[1G[0Jthe_database> db.colle.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[23G[1G[0Jthe_database> db.coll.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[22G[1G[0Jthe_database> db.col.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[21G[1G[0Jthe_database> db.co.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[20G[1G[0Jthe_database> db.c.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[19G[1G[0Jthe_database> db..insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[18G[1G[0Jthe_database> db.t.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[19G[1G[0Jthe_database> db.to.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[20G[1G[0Jthe_database> db.tod.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[21G[1G[0Jthe_database> db.todo.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[22G[1G[0Jthe_database> db.todos.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[23G[80C
+{
+  acknowledged: [33mtrue[39m,
+  insertedId: ObjectId([32m'65f99bf5779481ff9d9c9363'[39m)
+}
+[1G[0Jthe_database> [15G[1G[0Jthe_database> db.todos.insertOne({ [33mtext[39m: [32m"Increase the number of tools in my toolbelt"[39m, [33mdone[39m: [33mfalse[39m })[103G[1G[0Jthe_database> db.todos.find({})[32G
+[
+  {
+    _id: ObjectId([32m'65f98f338d4284bb4d40aa25'[39m),
+    text: [32m'Write code'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'65f98f338d4284bb4d40aa26'[39m),
+    text: [32m'Learn about containers!'[39m,
+    done: [33mtrue[39m
+  },
+  {
+    _id: ObjectId([32m'65f99bf5779481ff9d9c9363'[39m),
+    text: [32m'Increase the number of tools in my toolbelt'[39m,
+    done: [33mfalse[39m
+  }
+]
+[1G[0Jthe_database> [15Gexit
+[?2004hroot@70b91e1bd491:/# exit
+[?2004lexit
+[1m[7m%[27m[1m[0m                                                                                                                           ]2;reijjo@reijjos-Air:~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend]1;../todo-backend]7;file://reijjos-Air.home/Users/reijjo/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend\[0m[27m[24m[J[38;5;237m---------------------------------------------------------------------------------------------------------------------------[00m
+[38;5;032m~/workspace/2023-fullstackopen/2023_fullstackopen_osa12/part12-containers-applications/todo-app/todo-backend [38;5;075m([38;5;078mmain[38;5;214m*[00m[38;5;075m)[00m [38;5;105m»[00m [K[?1h=[?2004heexit [K[K[?1l>[?2004l
+]2;exit]1;exit
+Script done on Tue Mar 19 16:08:00 2024
