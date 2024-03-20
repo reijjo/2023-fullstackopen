@@ -1,0 +1,14 @@
+services:
+  app:
+    image: hello-front-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3003:3003
+    container_name: hello-front-dev
+
+  debug-helper:
+    image: busybox
