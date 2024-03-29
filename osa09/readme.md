@@ -15,6 +15,24 @@
 ```
 
 - Initialize tsconfig.json by: `npm run tsc -- --init`
+- Recommend for now for `tsconfig.json` file:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "outDir": "./build/",
+    "module": "commonjs",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true
+  }
+}
+```
+
 - Install some packages: `npm install express` `npm install --save-dev eslint @types/express @typescript-eslint/eslint-plugin @typescript-eslint/parser` (eslint isnt necessary I think.)
 - Create `.eslintrc` file:
 
