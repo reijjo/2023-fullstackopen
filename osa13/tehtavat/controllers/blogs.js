@@ -1,8 +1,26 @@
 const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 
-const { Blog } = require("../models");
+const { Blog, User } = require("../models");
+const { SECRET } = require("../utils/config");
 
-const { blogFinder, errorHandler } = require("../utils/middleware");
+const { blogFinder } = require("../utils/middleware");
+
+// Middleware for token
+const tokenExtractor = (req, res, next) => {
+  const authorization = req.get("authorization");
+
+  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+    try {
+      req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+    } catch (error) {
+      return res.status(401).json({ error: "token invalid" });
+    }
+  } else {
+    return res.status(401).json({ error: "token missing" });
+  }
+  next();
+};
 
 // Routes
 
@@ -10,22 +28,38 @@ const { blogFinder, errorHandler } = require("../utils/middleware");
 // GET
 // Get all blogs
 router.get("/", async (req, res) => {
-  const blogs = await Blog.findAll();
+  // const blogs = await Blog.findAll();
 
-  console.log(
-    "blogs",
-    blogs.map((b) => b.toJSON())
-  );
+  // console.log(
+  //   "blogs",
+  //   blogs.map((b) => b.toJSON())
+  // );
 
+  // res.json(blogs);
+  const blogs = await Blog.findAll({
+    attributes: { exclude: ["userId"] },
+    include: {
+      model: User,
+      attributes: ["name"],
+    },
+  });
   res.json(blogs);
 });
 
 // api/blogs
 // POST
 // Add new blog
-router.post("/", async (req, res, next) => {
+router.post("/", tokenExtractor, async (req, res, next) => {
   try {
-    const blog = await Blog.create(req.body);
+    const user = await User.findByPk(req.decodedToken.id);
+
+    console.log("user", user);
+
+    const blog = await Blog.create({
+      ...req.body,
+      userId: user.id,
+      date: new Date(),
+    });
     res.json(blog);
   } catch (error) {
     next(error);
@@ -63,15 +97,24 @@ router.put("/:id", blogFinder, async (req, res, next) => {
 // api/blogs/:id
 // DELETE
 // Delete one blog
-router.delete("/:id", blogFinder, async (req, res) => {
+router.delete("/:id", blogFinder, tokenExtractor, async (req, res) => {
   try {
     if (!req.blog) {
       return res.status(404).json({ error: "Blog not found." });
     }
 
-    await req.blog.destroy();
+    const user = await User.findByPk(req.decodedToken.id);
 
-    res.json({ msg: "Blog deleted." });
+    console.log("req.bog", req.blog);
+    console.log("user", user);
+
+    if (req.blog.userId === user.id) {
+      await req.blog.destroy();
+
+      res.json({ msg: "Blog deleted." });
+    } else {
+      res.status(404).json({ msg: "Cant delete. That is not your blog" });
+    }
   } catch (error) {
     return res.status(400).json({ error });
   }

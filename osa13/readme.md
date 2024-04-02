@@ -467,3 +467,153 @@ router.put("/:id", noteFinder, async (req, res) => {
   }
 });
 ```
+
+## User Management
+
+- models/user.js:
+
+```js
+const { Model, DataTypes } = require("sequelize");
+
+const { sequelize } = require("../util/db");
+
+class User extends Model {}
+
+User.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    underscored: true,
+    timestamps: false,
+    modelName: "user",
+  }
+);
+
+module.exports = User;
+```
+
+- Add to models/index.js:
+
+```js
+const Note = require("./note");
+const User = require("./user");
+
+Note.sync();
+User.sync();
+
+module.exports = {
+  Note,
+  User,
+};
+```
+
+- controllers/users.js
+
+```js
+const router = require("express").Router();
+
+const { User } = require("../models");
+
+router.get("/", async (req, res) => {
+  const users = await User.findAll();
+  res.json(users);
+});
+
+router.post("/", async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+    res.json(user);
+  } catch (error) {
+    return res.status(400).json({ error });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const user = await User.findByPk(req.params.id);
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404).end();
+  }
+});
+
+module.exports = router;
+```
+
+- controllers/login.js
+
+```js
+const jwt = require("jsonwebtoken");
+const router = require("express").Router();
+
+const { SECRET } = require("../util/config");
+const User = require("../models/user");
+
+router.post("/", async (request, response) => {
+  const body = request.body;
+
+  const user = await User.findOne({
+    where: {
+      username: body.username,
+    },
+  });
+
+  const passwordCorrect = body.password === "secret";
+
+  if (!(user && passwordCorrect)) {
+    return response.status(401).json({
+      error: "invalid username or password",
+    });
+  }
+
+  const userForToken = {
+    username: user.username,
+    id: user.id,
+  };
+
+  const token = jwt.sign(userForToken, SECRET);
+
+  response
+    .status(200)
+    .send({ token, username: user.username, name: user.name });
+});
+
+module.exports = router;
+```
+
+- Add routes to index.js file
+
+## Connection between the tables (one-to-many relationships)
+
+- Only logged-in user can add notes, and each note is associated with the user who created it.
+- Add to `models/index.js`:
+
+```js
+const Note = require("./note");
+const User = require("./user");
+
+User.hasMany(Note);
+Note.belongsTo(User);
+Note.sync({ alter: true });
+User.sync({ alter: true });
+
+module.exports = {
+  Note,
+  User,
+};
+```
